@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+    nginx:
+        container_name: nginx
+        image: nginx
+        hostname: nginx
+        networks:
+            - lnmp_net
+        ports:
+            - 80:80
+        volumes:
+            - .:/workbench
+            - ./conf.d/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - php
+            - mysql
+            - redis
+    php:
+        container_name: php
+        build: ./docker/php-fpm/
+        hostname: php
+        networks:
+            - lnmp_net
+        ports:
+            - 9000:9000
+        volumes:
+            - .:/workbench
+    mysql:
+        container_name: mysql
+        image: mysql
+        hostname: mysql
+        networks:
+            - lnmp_net
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./storage/mysql:/var/lib/mysql
+    redis:
+        container_name: redis
+        image: redis
+        hostname: redis
+        networks:
+            - lnmp_net
+        ports:
+            - 6379:6379
+        volumes:
+            - ./storage/redis:/data
+networks:
+    lnmp_net:
+        name: lnmp_net
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.168.200.0/24

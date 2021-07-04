@@ -1,0 +1,5 @@
+.DS_Store
+/html/*
+!/html/adminer
+/html/adminer/*
+!/html/adminer/nginx.conf
